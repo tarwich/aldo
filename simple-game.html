@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Physics Playground</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+      }
+      canvas {
+        border: 2px solid #333;
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+    <script>
+      // ====== PHYSICS PARAMETERS TO PLAY WITH ======
+      const PHYSICS = {
+        gravity: 0.5, // Try changing gravity strength!
+        bounceEnergy: 0.7, // How bouncy? (0-1, higher = bouncier)
+        friction: 0.99, // Air friction (0-1, lower = more friction)
+        ballSize: 20, // Size of the ball
+        ballColor: '#ff4444', // Try different colors!
+      };
+
+      // Get our canvas and its context for drawing
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // Ball object with position and velocity
+      const ball = {
+        x: canvas.width / 2,
+        y: 50,
+        velocityX: 5,
+        velocityY: 0,
+      };
+
+      // Game loop
+      function update() {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Apply physics to the ball
+
+        // Gravity affects vertical velocity
+        ball.velocityY += PHYSICS.gravity;
+
+        // Apply friction
+        ball.velocityX *= PHYSICS.friction;
+        ball.velocityY *= PHYSICS.friction;
+
+        // Update position
+        ball.x += ball.velocityX;
+        ball.y += ball.velocityY;
+
+        // Bounce off walls
+        if (ball.x + PHYSICS.ballSize > canvas.width) {
+          ball.x = canvas.width - PHYSICS.ballSize;
+          ball.velocityX *= -PHYSICS.bounceEnergy;
+        }
+        if (ball.x - PHYSICS.ballSize < 0) {
+          ball.x = PHYSICS.ballSize;
+          ball.velocityX *= -PHYSICS.bounceEnergy;
+        }
+
+        // Bounce off floor and ceiling
+        if (ball.y + PHYSICS.ballSize > canvas.height) {
+          ball.y = canvas.height - PHYSICS.ballSize;
+          ball.velocityY *= -PHYSICS.bounceEnergy;
+        }
+        if (ball.y - PHYSICS.ballSize < 0) {
+          ball.y = PHYSICS.ballSize;
+          ball.velocityY *= -PHYSICS.bounceEnergy;
+        }
+
+        // Draw the ball
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, PHYSICS.ballSize, 0, Math.PI * 2);
+        ctx.fillStyle = PHYSICS.ballColor;
+        ctx.fill();
+        ctx.closePath();
+
+        // Continue the game loop
+        requestAnimationFrame(update);
+      }
+
+      // Start the game when clicked
+      canvas.addEventListener('click', function (event) {
+        const rect = canvas.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const clickY = event.clientY - rect.top;
+
+        // Calculate velocity based on click position relative to ball
+        ball.velocityX = (clickX - ball.x) * 0.1;
+        ball.velocityY = (clickY - ball.y) * 0.1;
+      });
+
+      // Start the game loop
+      update();
+    </script>
+  </body>
+</html>
