@@ -5,6 +5,7 @@
     <style>
       body {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;
@@ -16,9 +17,20 @@
         border: 2px solid #333;
         background-color: white;
       }
+      .instructions {
+        margin-bottom: 20px;
+        padding: 10px 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #333;
+      }
     </style>
   </head>
   <body>
+    <div class="instructions">
+      👆 Click anywhere on the canvas to launch the ball in that direction!
+    </div>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
 
     <script>
